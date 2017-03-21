@@ -5,6 +5,7 @@ See my detailed article on [Terraform, Kubernetes and Microsoft Azure](http://da
 
 Some pre-requisites first:
 
+* Clone this project on your local machine;
 * [Install Terraform](https://www.terraform.io/intro/getting-started/install.html);
 * [Install Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) (which is still in technical preview);
 * Once installed check you have logged via `$ az login`;
