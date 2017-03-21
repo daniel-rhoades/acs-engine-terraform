@@ -1,7 +1,7 @@
 # acs-engine-terraform
 Azure Container Service (ACS) Engine running K8s and provisioned by Terraform.
 
-See my detailed article on [Terraform, Kubernetes and Microsoft Azure]() to understand how to use it.  But if you are feeling lazy, then do the following steps to get it working:
+See my detailed article on [Terraform, Kubernetes and Microsoft Azure](http://danielrhoades.com/) to understand how to use it.  But if you are feeling lazy, then do the following steps to get it working:
 
 Some pre-requisites first:
 
@@ -12,9 +12,6 @@ Some pre-requisites first:
 * [Configure a service principle in Azure AD](https://docs.microsoft.com/en-us/azure/container-service/container-service-kubernetes-service-principal#create-a-service-principal-in-azure-active-directory) and note down the `applicationId` (which will be the `servicePrincipalClientId`) and the `password` (which will be the `servicePrincipalClientSecret`);
 * [Install the ACS Engine locally](https://github.com/Azure/acs-engine/blob/master/docs/acsengine.md#downloading-and-building-acs-engine-locally) we will use this to generate an Azure Resource Template for the K8s cluster;
 * [Generate an SSH key](https://github.com/Azure/acs-engine/blob/master/docs/ssh.md#ssh-key-generation) this will be given to VMs that get created in the cluster.
-
-First, configure Terraform to work with Azure:
-
 * Download the [Azure/Terraform Configuration Script](https://github.com/mitchellh/packer/blob/master/contrib/azure-setup.sh);
 * Run the script and follow the instructions.  If you have any trouble then follow [Terraform's Azure setup guide](https://www.terraform.io/docs/providers/azurerm/index.html), I recommend following the Azure CLI approach, the manual approach through the console didn't work for me.
 
@@ -54,8 +51,8 @@ $ scp -i <SSH-KEY> azureuser@<MASTER-PUBLIC-IP>:~/.kube/config ~/.kube/config
 
 In the above example you'll need to replace the placeholder values:
 
-* SSH-KEY - Private SSH key matching the public key given to the cluster during setup, e.g. ~/.ssh/id_rsa;
-* MASTER-PUBLIC-IP - Find the master VM in the Azure portal, the public IP address will be attached to it.
+* `SSH-KEY` - Private SSH key matching the public key given to the cluster during setup, e.g. `~/.ssh/id_rsa`;
+* `MASTER-PUBLIC-IP` - Find the master VM in the Azure portal, the public IP address will be attached to it.
  
 Then test the connection using `kubectl get nodes`, which should return a list of our 2 nodes (1 master and 1 worker).  You're done, you can now deploy your own pods, for example:
 
