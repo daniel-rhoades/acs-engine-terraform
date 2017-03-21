@@ -1,0 +1,38 @@
+{
+  "apiVersion": "vlabs",
+  "properties": {
+    "orchestratorProfile": {
+      "orchestratorType": "Kubernetes"
+    },
+    "masterProfile": {
+      "count": ${master_vm_count},
+      "dnsPrefix": "${dns_prefix}",
+      "vmSize": "${vm_size}",
+      "vnetSubnetId": "${subnet_id}",
+      "firstConsecutiveStaticIP": "${first_master_ip}"
+    },
+    "agentPoolProfiles": [
+      {
+        "name": "agentpool1",
+        "count": ${worker_vm_count},
+        "vmSize": "${vm_size}",
+        "vnetSubnetId": "${subnet_id}",
+        "availabilityProfile": "AvailabilitySet"
+      }
+    ],
+    "linuxProfile": {
+      "adminUsername": "${admin_user}",
+      "ssh": {
+        "publicKeys": [
+          {
+            "keyData": "${ssh_key}"
+          }
+        ]
+      }
+    },
+    "servicePrincipalProfile": {
+      "servicePrincipalClientID": "${service_principle_client_id}",
+      "servicePrincipalClientSecret": "${service_principle_client_secret}"
+    }
+  }
+}

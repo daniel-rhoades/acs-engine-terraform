@@ -1,3 +1,6 @@
-# Compiled files
+.idea/
 *.tfstate
 *.tfstate.backup
+*.tfvars
+k8s_rendered.json
+_output/
