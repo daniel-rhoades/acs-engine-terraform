@@ -46,8 +46,8 @@ data "template_file" "acs_engine_config" {
     worker_vm_count = "${var.worker_vm_count}"
     admin_user = "${var.admin_user}"
     ssh_key = "${var.ssh_key}"
-    service_principle_client_id = "${var.service_principle_client_id}"
-    service_principle_client_secret = "${var.service_principle_client_secret}"
+    service_principle_client_id = "${var.azure_client_id}"
+    service_principle_client_secret = "${var.azure_client_secret}"
   }
 
   depends_on = ["azurerm_subnet.default"]

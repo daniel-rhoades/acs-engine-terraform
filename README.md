@@ -10,11 +10,9 @@ Some pre-requisites first:
 * [Install Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) (which is still in technical preview);
 * Once installed check you have logged via `$ az login`;
 * [Install K8s CLI](https://kubernetes.io/docs/tasks/kubectl/install/);
-* [Configure a service principle in Azure AD](https://docs.microsoft.com/en-us/azure/container-service/container-service-kubernetes-service-principal#create-a-service-principal-in-azure-active-directory) and note down the `applicationId` (which will be the `servicePrincipalClientId`) and the `password` (which will be the `servicePrincipalClientSecret`);
 * [Install the ACS Engine locally](https://github.com/Azure/acs-engine/blob/master/docs/acsengine.md#downloading-and-building-acs-engine-locally) we will use this to generate an Azure Resource Template for the K8s cluster;
-* [Generate an SSH key](https://github.com/Azure/acs-engine/blob/master/docs/ssh.md#ssh-key-generation) this will be given to VMs that get created in the cluster.
-* Download the [Azure/Terraform Configuration Script](https://github.com/mitchellh/packer/blob/master/contrib/azure-setup.sh);
-* Run the script and follow the instructions.  If you have any trouble then follow [Terraform's Azure setup guide](https://www.terraform.io/docs/providers/azurerm/index.html), I recommend following the Azure CLI approach, the manual approach through the console didn't work for me.
+* [Generate an SSH key](https://github.com/Azure/acs-engine/blob/master/docs/ssh.md#ssh-key-generation) this will be given to VMs that get created in the cluster;
+* Follow [Terraform's Azure setup guide, using the Azure CLI](https://www.terraform.io/docs/providers/azurerm/index.html#to-create-using-azure-cli), this will give you the subscription/tenant/client id/client secret you'll need in a moment.
 
 Next, create a Terraform variables file (e.g. `k8s.tfvars`) with the following information:
 
@@ -25,22 +23,21 @@ azure_client_id       = "<YOUR-AZURE-CLIENT-ID-FOR-TERRAFORM>"
 azure_client_secret   = "<YOUR-AZURE-CLIENT-SECRET-FOR-TERRAFORM>"
 
 dns_prefix                      = "<YOUR-DNS-PREFIX>"
-service_principle_client_id     = "<YOUR-SERVICE-PRINCIPLE-CLIENT-ID>"
-service_principle_client_secret = "<YOUR-SERVICE-PRINCIPLE-CLIENT-SECRET>"
 ssh_key                         = "<YOUR-SSH-KEY>"
 ```
 
 If you followed [Terraform's Azure setup guide](https://www.terraform.io/docs/providers/azurerm/index.html), then you'll already have the values for each of the `azure_*` variables, so replace those placeholders.  The other substitutions should be made as follows:
 
 * `YOUR-DNS-PREFIX` - Enter anything you like to prefix the DNS record for your cluster, e.g `dans-k8s-example`
-* `YOUR-SSH-KEY` - The PEM encoded public version of the key you generated, e.g. just get the output from `cat ~/.ssh/id_rsa.pub`;
-* `YOUR-SERVICE-PRINCIPLE-CLIENT-ID` / `YOUR-SERVICE-PRINCIPLE-CLIENT-SECRET` - Service principle you created earlier.
+* `YOUR-SSH-KEY` - The PEM encoded public version of the key you generated, e.g. just get the output from `cat ~/.ssh/id_rsa.pub`.
 
 That should do it, so just run it now:
 
 ```bash
 $ terraform apply -var-file="k8s.tfvars"
 ```
+
+If the provisioning takes a long time, you might get an error, which will likely be due to a timeout.  If you can see 16 items in the resource group in the Azure portal and the rest of the steps in the guide work, it should be all fine. 
 
 > There is an issue with the ACS Engine at present, where it doesn't update the route tables for existing subnets, so within the Azure portal, manually go in and associate the cluster's subnet with the master route table (there is only one route).  You can either do this association on the route itself or within the subnet admin page.  If you don't do this workaround you find nothing works properly.
 
@@ -71,4 +68,4 @@ The lazy way to delete the setup when you are done is run:
 $ az group delete --name "k8sexample"
 ```
 
-You can't just run `terraform apply -var-file="k8s.tfvars"` unfortunately, because the setup of the K8s cluster via the ACS Engine is a bit of a hack at the moment. 
+You can't just run `terraform apply -var-file="k8s.tfvars"` unfortunately, because the setup of the K8s cluster via the ACS Engine is a bit of a hack at the moment.  Also, you might be best to manually delete `k8s_rendered.json` and the `_output` directory between runs.  If Terraform messes up then also delete the `terraform.tfstate`/`terraform.tfstate.backup` files.

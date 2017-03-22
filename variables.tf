@@ -82,14 +82,6 @@ variable "ssh_key" {
   description = "SSH public key in PEM format to apply to VMs"
 }
 
-variable "service_principle_client_id" {
-  description = "Service Principle Client ID for K8s"
-}
-
-variable "service_principle_client_secret" {
-  description = "Service Principle Client Secret for K8s"
-}
-
 variable "cluster_name" {
   description = "Name of the K8s cluster"
   default = "k8sexample-cluster"
