@@ -65,7 +65,7 @@ resource "null_resource" "render_acs_engine_config" {
 # Locally run the ACS Engine to produce the Azure Resource Template for the K8s cluster
 resource "null_resource" "run_acs_engine" {
   provisioner "local-exec" {
-    command = "acs-engine ${var.acs_engine_config_file_rendered}"
+    command = "acs-engine generate ${var.acs_engine_config_file_rendered}"
   }
 
   depends_on = ["null_resource.render_acs_engine_config"]
@@ -78,4 +78,13 @@ resource "null_resource" "deploy_acs" {
   }
 
   depends_on = ["null_resource.run_acs_engine"]
+}
+
+# Locally run the Azure 2.0 CLI to update route table
+resource "null_resource" "apply_route" {
+  provisioner "local-exec" {
+    command = "az network vnet subnet update --name ${azurerm_subnet.default.name} --resource-group ${var.resource_group_name} --vnet-name ${azurerm_virtual_network.default.name} --route-table $(az resource list --resource-group ${var.resource_group_name} --resource-type \"Microsoft.Network/routeTables\"|grep subscrip|awk '{print $2}'|awk -F ',' '{print $1}'|sed -e 's/^\"//g' -e 's/\"$//')"
+  }
+
+  depends_on = ["null_resource.deploy_acs"]
 }
