@@ -37,11 +37,9 @@ That should do it, so just run it now:
 $ terraform apply -var-file="k8s.tfvars"
 ```
 
-If the provisioning takes a long time, you might get an error, which will likely be due to a timeout.  If you can see 16 items in the resource group in the Azure portal and the rest of the steps in the guide work, it should be all fine. 
+If the provisioning takes a long time, you might get an error, which will likely be due to a timeout.  If you can see 16 items in the resource group in the Azure portal and the rest of the steps in the guide work, it should be all fine.
 
-> There is an issue with the ACS Engine at present, where it doesn't update the route tables for existing subnets, so within the Azure portal, manually go in and associate the cluster's subnet with the master route table (there is only one route).  You can either do this association on the route itself or within the subnet admin page.  If you don't do this workaround you find nothing works properly.
-
-Once that's all done we can remotely connect to the cluster, to get the K8s remote configuration it's easier just to grab this from the master like so:
+We can now remotely connect to the cluster, to get the K8s remote configuration it's easier just to grab this from the master like so:
   
 ```bash
 $ scp -i <SSH-KEY> azureuser@<MASTER-PUBLIC-IP>:~/.kube/config ~/.kube/config
