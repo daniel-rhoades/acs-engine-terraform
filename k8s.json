@@ -31,8 +31,8 @@
       }
     },
     "servicePrincipalProfile": {
-      "servicePrincipalClientID": "${service_principle_client_id}",
-      "servicePrincipalClientSecret": "${service_principle_client_secret}"
+      "clientId": "${service_principle_client_id}",
+      "secret": "${service_principle_client_secret}"
     }
   }
 }

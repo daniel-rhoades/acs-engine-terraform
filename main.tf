@@ -17,7 +17,7 @@ resource "azurerm_virtual_network" "default" {
   address_space       = ["${var.cidr}"]
   location            = "${var.azure_location}"
   resource_group_name = "${var.resource_group_name}"
-  depends_on = ["azurerm_resource_group.default"]
+  depends_on          = ["azurerm_resource_group.default"]
 }
 
 # Azure Virtual Network -> Subnet
@@ -26,7 +26,7 @@ resource "azurerm_subnet" "default" {
   resource_group_name  = "${var.resource_group_name}"
   virtual_network_name = "${azurerm_virtual_network.default.name}"
   address_prefix       = "${var.cidr_subnet}"
-  depends_on = ["azurerm_virtual_network.default"]
+  depends_on           = ["azurerm_virtual_network.default"]
 }
 
 output "virtualnetwork_subnet_default_id" {
@@ -38,15 +38,15 @@ data "template_file" "acs_engine_config" {
   template = "${file(var.acs_engine_config_file)}"
 
   vars {
-    master_vm_count = "${var.master_vm_count}"
-    dns_prefix = "${var.dns_prefix}"
-    vm_size = "${var.vm_size}"
-    subnet_id = "${azurerm_subnet.default.id}"
-    first_master_ip = "${var.first_master_ip}"
-    worker_vm_count = "${var.worker_vm_count}"
-    admin_user = "${var.admin_user}"
-    ssh_key = "${var.ssh_key}"
-    service_principle_client_id = "${var.azure_client_id}"
+    master_vm_count                 = "${var.master_vm_count}"
+    dns_prefix                      = "${var.dns_prefix}"
+    vm_size                         = "${var.vm_size}"
+    subnet_id                       = "${azurerm_subnet.default.id}"
+    first_master_ip                 = "${var.first_master_ip}"
+    worker_vm_count                 = "${var.worker_vm_count}"
+    admin_user                      = "${var.admin_user}"
+    ssh_key                         = "${var.ssh_key}"
+    service_principle_client_id     = "${var.azure_client_id}"
     service_principle_client_secret = "${var.azure_client_secret}"
   }
 
@@ -65,7 +65,7 @@ resource "null_resource" "render_acs_engine_config" {
 # Locally run the ACS Engine to produce the Azure Resource Template for the K8s cluster
 resource "null_resource" "run_acs_engine" {
   provisioner "local-exec" {
-    command = "acs-engine generate ${var.acs_engine_config_file_rendered}"
+    command = "acs-engine ${var.acs_engine_config_file_rendered}"
   }
 
   depends_on = ["null_resource.render_acs_engine_config"]
